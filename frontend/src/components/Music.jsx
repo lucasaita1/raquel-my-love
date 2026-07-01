@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MUSIC } from "@/constants/testIds";
-import { BIEBER_GALLERY } from "@/constants/assets";
+import { IMAGES, BIEBER_GALLERY } from "@/constants/assets";
 
 const marqueeWords = [
     "Baby",
@@ -17,11 +17,20 @@ const marqueeWords = [
     "10.000 Hours",
 ];
 
+/**
+ * Music section — Ato 03.
+ * Feature: cinematic morph between Raquel (headphones) and Justin (live),
+ *  driven by scroll, echoing the "she listens → he performs" narrative.
+ */
 export const Music = () => {
     const secRef = useRef(null);
     const titleRef = useRef(null);
     const cardsRef = useRef([]);
     const marqueeRef = useRef(null);
+    const morphWrap = useRef(null);
+    const raquelImg = useRef(null);
+    const justinImg = useRef(null);
+    const morphLabel = useRef(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -45,7 +54,6 @@ export const Music = () => {
                 ease: "power3.out",
             });
 
-            // Marquee parallax
             gsap.to(marqueeRef.current, {
                 xPercent: -20,
                 ease: "none",
@@ -56,6 +64,63 @@ export const Music = () => {
                     scrub: 1,
                 },
             });
+
+            // ── Morph: Raquel (fone) → Justin (live) ──
+            // Initial state
+            gsap.set(justinImg.current, { autoAlpha: 0, scale: 1.05 });
+            gsap.set(raquelImg.current, { autoAlpha: 1, scale: 1 });
+
+            gsap.timeline({
+                scrollTrigger: {
+                    trigger: morphWrap.current,
+                    start: "top 70%",
+                    end: "bottom 30%",
+                    scrub: 1.2,
+                },
+            })
+                .to(
+                    raquelImg.current,
+                    { autoAlpha: 0, scale: 0.95, filter: "blur(6px)", ease: "none" },
+                    0.5,
+                )
+                .to(
+                    justinImg.current,
+                    {
+                        autoAlpha: 1,
+                        scale: 1,
+                        filter: "blur(0px)",
+                        ease: "none",
+                    },
+                    0.5,
+                );
+
+            // Label swap
+            gsap.to(morphLabel.current?.querySelector(".lbl-raquel"), {
+                autoAlpha: 0,
+                yPercent: -100,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: morphWrap.current,
+                    start: "top 60%",
+                    end: "bottom 50%",
+                    scrub: 1,
+                },
+            });
+            gsap.fromTo(
+                morphLabel.current?.querySelector(".lbl-justin"),
+                { autoAlpha: 0, yPercent: 100 },
+                {
+                    autoAlpha: 1,
+                    yPercent: 0,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: morphWrap.current,
+                        start: "top 55%",
+                        end: "bottom 45%",
+                        scrub: 1,
+                    },
+                },
+            );
         }, secRef);
         return () => ctx.revert();
     }, []);
@@ -71,7 +136,7 @@ export const Music = () => {
                     "linear-gradient(180deg, var(--plum-950) 0%, var(--plum-800) 60%, var(--plum-900) 100%)",
             }}
         >
-            {/* Big background marquee */}
+            {/* Background marquee */}
             <div
                 ref={marqueeRef}
                 data-testid={MUSIC.marquee}
@@ -98,9 +163,7 @@ export const Music = () => {
                         <span className="w inline-block">Purpose</span>
                     </span>{" "}
                     <span className="reveal-line">
-                        <span className="w inline-block">
-                            de
-                        </span>
+                        <span className="w inline-block">de</span>
                     </span>{" "}
                     <span className="reveal-line">
                         <span className="w inline-block text-[color:var(--tangerine)] not-italic font-normal">
@@ -121,10 +184,89 @@ export const Music = () => {
                     .
                 </p>
 
+                {/* MORPH — Raquel (fone) ⇄ Justin (live) */}
+                <div
+                    ref={morphWrap}
+                    data-testid="music-morph"
+                    className="mt-24 md:mt-32 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 items-center"
+                >
+                    <div className="md:col-span-7 md:col-start-1">
+                        <div className="relative aspect-[4/5] md:aspect-[4/5] overflow-hidden bg-[color:var(--plum-950)]">
+                            <img
+                                ref={raquelImg}
+                                data-testid="music-morph-raquel"
+                                src={IMAGES.raquelHeadphones}
+                                alt="Raquel ouvindo Justin de fone"
+                                className="absolute inset-0 w-full h-full object-cover"
+                                style={{ willChange: "transform, opacity, filter" }}
+                            />
+                            <img
+                                ref={justinImg}
+                                data-testid="music-morph-justin"
+                                src={IMAGES.justinLive}
+                                alt="Justin Bieber ao vivo"
+                                className="absolute inset-0 w-full h-full object-cover"
+                                style={{ willChange: "transform, opacity, filter" }}
+                            />
+                            {/* Overlay gradient */}
+                            <div
+                                className="absolute inset-0 pointer-events-none"
+                                style={{
+                                    background:
+                                        "linear-gradient(180deg, transparent 40%, rgba(10,5,16,0.7) 100%)",
+                                }}
+                            />
+                            {/* Label */}
+                            <div
+                                ref={morphLabel}
+                                className="absolute bottom-6 left-6 h-14 overflow-hidden"
+                            >
+                                <div className="lbl-raquel absolute inset-0 flex items-end">
+                                    <div>
+                                        <div className="font-mono text-[10px] tracking-[0.28em] uppercase text-[color:var(--amber)]">
+                                            ela · ouvindo
+                                        </div>
+                                        <div className="font-display italic text-xl md:text-2xl text-[color:var(--ivory)]">
+                                            no fone, sempre no repeat
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="lbl-justin absolute inset-0 flex items-end">
+                                    <div>
+                                        <div className="font-mono text-[10px] tracking-[0.28em] uppercase text-[color:var(--tangerine)]">
+                                            ele · cantando
+                                        </div>
+                                        <div className="font-display italic text-xl md:text-2xl text-[color:var(--ivory)]">
+                                            Justice Tour · o dono do palco
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="md:col-span-5 md:col-start-8">
+                        <div className="font-mono text-[11px] tracking-[0.28em] uppercase text-[color:var(--amber)] mb-4">
+                            role · e vê a mágica acontecer
+                        </div>
+                        <h3 className="font-display italic text-4xl md:text-6xl text-[color:var(--ivory)] leading-[0.95]">
+                            De um lado do fone
+                            <br />
+                            <em className="not-italic text-[color:var(--tangerine)]">
+                                pro palco dele.
+                            </em>
+                        </h3>
+                        <p className="mt-6 text-[color:var(--ivory)]/70 text-base md:text-lg leading-relaxed">
+                            Ela escuta como quem reza. E quando ele canta, é como se
+                            o mundo confirmasse que o gosto dela sempre esteve certo.
+                        </p>
+                    </div>
+                </div>
+
                 {/* Feature strip */}
-                <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 border-y border-white/10 py-8">
+                <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 border-y border-white/10 py-8">
                     {[
-                        ["1º show", "sonho de infância"],
+                        ["1º show", "no Rock in Rio"],
                         ["∞", "vezes cantando Baby"],
                         ["+7", "álbuns na cabeça"],
                         ["100%", "purpose energy"],
@@ -140,20 +282,20 @@ export const Music = () => {
                     ))}
                 </div>
 
-                {/* Gallery */}
+                {/* Rock in Rio Gallery — real photos */}
                 <div className="mt-24">
                     <div className="flex items-end justify-between mb-10">
                         <h3 className="font-display italic text-2xl md:text-4xl text-[color:var(--ivory)]">
-                            Galeria — em breve
+                            Rock in Rio · o dia dele
                         </h3>
                         <span className="font-mono text-[11px] tracking-[0.28em] uppercase text-[color:var(--ivory)]/50">
-                            placeholder · aguardando upload
+                            galeria · 03 momentos
                         </span>
                     </div>
 
                     <div
                         data-testid={MUSIC.gallery}
-                        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+                        className="grid grid-cols-1 md:grid-cols-3 gap-4"
                     >
                         {BIEBER_GALLERY.map((item, i) => (
                             <div
@@ -173,8 +315,8 @@ export const Music = () => {
                                         SLOT {String(i + 1).padStart(2, "0")}
                                     </div>
                                 )}
-                                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-[color:var(--plum-950)] to-transparent">
-                                    <div className="font-hand text-lg text-[color:var(--amber)]">
+                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[color:var(--plum-950)] via-[color:var(--plum-950)]/70 to-transparent">
+                                    <div className="font-hand text-xl text-[color:var(--amber)]">
                                         {item.caption}
                                     </div>
                                 </div>

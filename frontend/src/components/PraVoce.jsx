@@ -4,30 +4,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import useLenis from "@/hooks/useLenis";
 import useCursor from "@/hooks/useCursor";
 
-/**
- * Rota secreta /pra-voce — só ela conhece o link.
- * Carta rolável com blocos grandes de tipografia editorial fade-in
- * enquanto "Know No Better" toca no fundo (YT iframe invisível).
- */
-
 // Know No Better — Major Lazer feat. Travis Scott, Camila Cabello & Quavo
-const YT_VIDEO_ID = "X0eA1kZBFHc";
+const SPOTIFY_TRACK_ID = "7LJkGyL4vVrtn1mho7BmtA";
 
-// Bloquinhos da carta – cada um vira uma "cena" rolável
 const BLOCKS = [
-    {
-        kind: "kicker",
-        text: "carta ao vivo · toque play",
-    },
-    {
-        kind: "title",
-        text: "Meu",
-        highlight: "amor,",
-    },
-    {
-        kind: "para",
-        text: "Eu criei esse espaço para você nunca esquecer quem você é.",
-    },
+    { kind: "kicker", text: "carta ao vivo · toque play no player abaixo" },
+    { kind: "title", text: "Meu", highlight: "amor," },
+    { kind: "para", text: "Eu criei esse espaço para você nunca esquecer quem você é." },
     {
         kind: "para",
         text: "Da menininha cheia de sonhos",
@@ -43,10 +26,7 @@ const BLOCKS = [
         kind: "quote",
         text: "Você faz tudo com tanta verdade e paixão que é impossível não se apaixonar.",
     },
-    {
-        kind: "para",
-        text: "Obrigado por mudar a minha vida,",
-    },
+    { kind: "para", text: "Obrigado por mudar a minha vida," },
     {
         kind: "para",
         text: "por transformar meus medos em certezas",
@@ -62,82 +42,27 @@ const BLOCKS = [
         text: "Prometo te amar",
         after: "e ser a sua interrogação mais certa.",
     },
-    {
-        kind: "sign",
-        text: "— Lucas!",
-    },
+    { kind: "sign", text: "— Lucas!" },
 ];
 
+/**
+ * Rota secreta /pra-voce — carta rolável com Spotify player nativo.
+ */
 export default function PraVoce() {
     useLenis();
     useCursor();
 
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [showIntro, setShowIntro] = useState(true);
-    const playerRef = useRef(null);
-    const iframeRef = useRef(null);
+    const [entered, setEntered] = useState(false);
     const blocksRef = useRef([]);
+    const playerWrapRef = useRef(null);
 
     useEffect(() => {
         document.title = "Pra você, amor.";
     }, []);
 
-    // Load YouTube IFrame API
+    // GSAP fade-in per block once entered
     useEffect(() => {
-        if (window.YT && window.YT.Player) return;
-        const tag = document.createElement("script");
-        tag.src = "https://www.youtube.com/iframe_api";
-        document.body.appendChild(tag);
-    }, []);
-
-    const startExperience = () => {
-        // Try to init player and play
-        const initPlayer = () => {
-            if (!window.YT || !window.YT.Player) {
-                setTimeout(initPlayer, 200);
-                return;
-            }
-            playerRef.current = new window.YT.Player(iframeRef.current, {
-                videoId: YT_VIDEO_ID,
-                playerVars: {
-                    autoplay: 1,
-                    controls: 0,
-                    disablekb: 1,
-                    fs: 0,
-                    modestbranding: 1,
-                    rel: 0,
-                    playsinline: 1,
-                    loop: 1,
-                    playlist: YT_VIDEO_ID,
-                    start: 12,
-                },
-                events: {
-                    onReady: (e) => {
-                        e.target.setVolume(60);
-                        e.target.playVideo();
-                        setIsPlaying(true);
-                    },
-                },
-            });
-        };
-        initPlayer();
-        setShowIntro(false);
-    };
-
-    const togglePlay = () => {
-        if (!playerRef.current) return;
-        if (isPlaying) {
-            playerRef.current.pauseVideo();
-            setIsPlaying(false);
-        } else {
-            playerRef.current.playVideo();
-            setIsPlaying(true);
-        }
-    };
-
-    // GSAP fade-in per block
-    useEffect(() => {
-        if (showIntro) return;
+        if (!entered) return;
         const ctx = gsap.context(() => {
             blocksRef.current.forEach((el) => {
                 if (!el) return;
@@ -153,27 +78,22 @@ export default function PraVoce() {
                     ease: "none",
                 });
             });
+            // Player floats in
+            gsap.from(playerWrapRef.current, {
+                y: 100,
+                autoAlpha: 0,
+                duration: 1,
+                delay: 0.3,
+                ease: "expo.out",
+            });
         });
         return () => ctx.revert();
-    }, [showIntro]);
+    }, [entered]);
+
+    const enterExperience = () => setEntered(true);
 
     return (
         <div className="app-root grain min-h-screen bg-[color:var(--night)] text-[color:var(--ivory)]">
-            {/* Hidden YT iframe */}
-            <div
-                style={{
-                    position: "fixed",
-                    left: -9999,
-                    top: -9999,
-                    width: 1,
-                    height: 1,
-                    opacity: 0,
-                    pointerEvents: "none",
-                }}
-            >
-                <div ref={iframeRef} />
-            </div>
-
             {/* Ambient background glow */}
             <div
                 aria-hidden
@@ -184,8 +104,8 @@ export default function PraVoce() {
                 }}
             />
 
-            {/* INTRO / PLAY GATE */}
-            {showIntro && (
+            {/* INTRO / DOOR */}
+            {!entered && (
                 <div
                     data-testid="pra-voce-intro"
                     className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6 text-center"
@@ -204,13 +124,13 @@ export default function PraVoce() {
                         </em>
                     </h1>
                     <p className="mt-8 max-w-[520px] text-[color:var(--ivory)]/70 font-display italic text-lg md:text-xl">
-                        Coloca o fone. Aumenta o volume. E rola devagar — essa é só
-                        pra você.
+                        Coloca o fone. Aperta o play no playerzinho aqui em baixo.
+                        E rola devagar — essa é só pra você.
                     </p>
 
                     <button
                         data-testid="pra-voce-start-btn"
-                        onClick={startExperience}
+                        onClick={enterExperience}
                         data-cursor="hover"
                         className="mt-12 group relative inline-flex items-center gap-4 px-8 py-4 border border-[color:var(--tangerine)]/50 rounded-full bg-[color:var(--tangerine)]/5 hover:bg-[color:var(--tangerine)]/15 transition-colors duration-300"
                     >
@@ -219,7 +139,7 @@ export default function PraVoce() {
                             <span className="absolute inset-0 rounded-full bg-[color:var(--tangerine)]" />
                         </span>
                         <span className="font-mono text-[12px] tracking-[0.32em] uppercase text-[color:var(--ivory)]">
-                            Tocar a nossa música · começar
+                            Entrar na carta
                         </span>
                     </button>
 
@@ -229,45 +149,72 @@ export default function PraVoce() {
                 </div>
             )}
 
-            {/* Floating music control */}
-            {!showIntro && (
-                <button
-                    onClick={togglePlay}
-                    data-testid="pra-voce-toggle-music"
-                    data-cursor="hover"
-                    className="fixed bottom-6 right-6 z-40 flex items-center gap-3 px-4 py-3 rounded-full bg-[color:var(--plum-900)]/80 backdrop-blur-md border border-[color:var(--tangerine)]/30 text-[color:var(--ivory)]"
+            {/* FLOATING SPOTIFY PLAYER */}
+            {entered && (
+                <div
+                    ref={playerWrapRef}
+                    data-testid="pra-voce-spotify-player"
+                    className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-[420px]"
                 >
-                    <span
-                        className={`relative w-2.5 h-2.5 rounded-full ${
-                            isPlaying
-                                ? "bg-[color:var(--tangerine)]"
-                                : "bg-[color:var(--ivory)]/40"
-                        }`}
-                    >
-                        {isPlaying && (
-                            <span className="absolute inset-0 rounded-full bg-[color:var(--tangerine)] animate-ping opacity-60" />
-                        )}
-                    </span>
-                    <span className="font-mono text-[10px] tracking-[0.28em] uppercase">
-                        {isPlaying ? "playing · know no better" : "paused"}
-                    </span>
-                </button>
+                    <div className="rounded-2xl overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.7)] border border-[color:var(--tangerine)]/25 backdrop-blur-md bg-[color:var(--plum-950)]/90">
+                        <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="relative w-2 h-2 rounded-full bg-[color:var(--tangerine)]">
+                                    <span className="absolute inset-0 rounded-full bg-[color:var(--tangerine)] animate-ping opacity-60" />
+                                </span>
+                                <span className="font-mono text-[10px] tracking-[0.24em] uppercase text-[color:var(--ivory)]/70">
+                                    nossa trilha · aperta ▶
+                                </span>
+                            </div>
+                            <a
+                                href={`https://open.spotify.com/track/${SPOTIFY_TRACK_ID}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-testid="pra-voce-spotify-open"
+                                data-cursor="hover"
+                                className="font-mono text-[9px] tracking-[0.24em] uppercase text-[color:var(--amber)] hover:text-[color:var(--tangerine)] transition-colors"
+                            >
+                                abrir no spotify ↗
+                            </a>
+                        </div>
+                        <iframe
+                            title="Know No Better on Spotify"
+                            data-testid="pra-voce-spotify-iframe"
+                            src={`https://open.spotify.com/embed/track/${SPOTIFY_TRACK_ID}?utm_source=generator`}
+                            width="100%"
+                            height="152"
+                            frameBorder="0"
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                            allowFullScreen
+                            loading="lazy"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            style={{ border: 0, colorScheme: "normal" }}
+                        />
+                    </div>
+                </div>
             )}
 
             {/* CONTENT */}
             <main
                 data-testid="pra-voce-page"
                 className={`relative transition-opacity duration-700 ${
-                    showIntro ? "opacity-0 pointer-events-none" : "opacity-100"
+                    entered ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
             >
-                {/* Opening spacer */}
-                <section className="min-h-[70vh] flex flex-col items-center justify-center px-6 text-center">
+                {/* Opening */}
+                <section className="min-h-[70vh] flex flex-col items-center justify-center px-6 text-center pt-24 pb-16">
                     <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-[color:var(--amber)] mb-6">
                         · role, meu amor ·
                     </div>
                     <div className="font-display italic text-4xl md:text-7xl text-[color:var(--ivory)]/90 leading-[0.95] max-w-[900px]">
-                        Uma carta que <em className="not-italic text-[color:var(--tangerine)]">só existe</em> por causa de você.
+                        Uma carta que{" "}
+                        <em className="not-italic text-[color:var(--tangerine)]">
+                            só existe
+                        </em>{" "}
+                        por causa de você.
+                    </div>
+                    <div className="mt-10 font-mono text-[10px] tracking-[0.28em] uppercase text-[color:var(--ivory)]/50">
+                        ↓ aperta play no player abaixo ↓
                     </div>
                 </section>
 
@@ -359,7 +306,7 @@ export default function PraVoce() {
                 </div>
 
                 {/* Outro */}
-                <section className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center pb-24">
+                <section className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center pb-48">
                     <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-[color:var(--amber)] mb-6">
                         · fim da carta · começo de tudo ·
                     </div>

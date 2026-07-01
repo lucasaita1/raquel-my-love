@@ -1,0 +1,55 @@
+{
+  "summary": "Frontend-only retest of bug fixes: (1) /pra-voce Spotify visible floating player and (2) main site Music/Justin morph + real Rock in Rio gallery. All 51 checks passed. Both bugs are fixed. Spotify iframe DOM is correct with proper src, fallback link works. Music morph uses real Raquel-with-headphones photo cross-fading into Justin. Gallery has 3 real Rock in Rio photos (sign, stage, Justin bw) all loading with HTTP 200.",
+  "tested_scope": ["frontend"],
+  "routes_tested": ["/", "/pra-voce"],
+  "viewports_tested": ["1920x900 desktop", "390x844 mobile"],
+  "passed": [
+    "/pra-voce: pra-voce-intro visible with title 'Pra você, amor.'",
+    "/pra-voce: pra-voce-start-btn present with text 'Entrar na carta' (rendered UPPERCASE via CSS text-transform)",
+    "/pra-voce: clicking start button hides intro and reveals content",
+    "/pra-voce: pra-voce-spotify-player is fixed, horizontally centered (center_x=960 in 1920 viewport), and near bottom (y+h=876/900)",
+    "/pra-voce: pra-voce-spotify-iframe exists with correct src https://open.spotify.com/embed/track/7LJkGyL4vVrtn1mho7BmtA?utm_source=generator",
+    "/pra-voce: pra-voce-spotify-open fallback link href = https://open.spotify.com/track/7LJkGyL4vVrtn1mho7BmtA (exact match)",
+    "/pra-voce: Spotify iframe attached to page frames (network loading confirmed)",
+    "/pra-voce: 11 blocks pra-voce-block-0 through pra-voce-block-10 all present in DOM",
+    "/pra-voce: no horizontal overflow at 1920x900 or 390x844",
+    "/pra-voce: player still visible on mobile",
+    "/: Nav testIDs present (site-nav, nav-logo, nav-link-hero/journey/music/story)",
+    "/: All 4 sections present (hero, journey, music, story)",
+    "/: music-morph, music-morph-raquel, music-morph-justin all present",
+    "/: music-morph-raquel src=gfpn7qrj_image.png (raquelHeadphones) — correct real photo",
+    "/: music-morph-justin src=5dhacuoe_image.png (justinLive) — correct real photo",
+    "/: Both morph images loaded (naturalWidth > 0)",
+    "/: music-gallery present with 3 cards (music-card-0/1/2)",
+    "/: card-0 src = s6kznp5v_image.png (Rock in Rio sign) — loaded",
+    "/: card-1 src = n4tzx8yp_image.png (Rock in Rio stage) — loaded",
+    "/: card-2 src = 5dhacuoe_image.png (Justin b&w) — loaded",
+    "/: On scroll into music-morph, GSAP scrub cross-fades Raquel (opacity 1→0) into Justin (opacity 0→1). Verified computed opacity: raquel=0/hidden, justin=1/visible after scroll",
+    "/: No horizontal overflow on desktop or mobile (scrollWidth == innerWidth on both)",
+    "/: Visual screenshot confirms Raquel-with-headphones photo displays large and clean on desktop"
+  ],
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "known_non_bugs": [
+    "Spotify embed shows 'Application error: a client-side exception has occurred' inside the iframe when rendered in the Playwright/headless Chromium environment. Root cause: Spotify's Next.js embed calls new Intl.Locale() and Playwright's default Chromium context has an empty/invalid locale header, causing RangeError. This is a Playwright-environment-only issue — real end-user browsers (which always ship a valid navigator.language) do NOT hit this. The iframe DOM and src are correct; the fallback 'abrir no spotify' link works. Confirmed as pre-warned in the review request. No action needed for production."
+  ],
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Music.jsx: minor UX suggestion — the morph label 'lbl-justin' element sits inside the same 14px-tall clip container as 'lbl-raquel'; on very narrow screens the 2-line label may clip. Not a blocker.",
+    "PraVoce.jsx: block-10 ('— Lucas!') has GSAP fade-in with scrub — content is empty until user scrolls near it. This is intentional per design (letter animation) — not a bug.",
+    "assets.js: BIEBER_GALLERY uses the same s6kznp5v/n4tzx8yp images that also appear in IMAGES.rockInRioSign/rockInRioStage — DRY is fine but if these ever diverge, consider referencing IMAGES.* instead of hardcoding URLs.",
+    "No data-testid on the 'footer' element itself (uses <footer> tag) — testable via tag selector but adding data-testid='site-footer' would be more robust."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100% (51/51 checks passed)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Both reported bugs are fixed. If Spotify iframe is ever reported as 'Application error' by testing tools, it's a Playwright locale quirk (Intl.Locale RangeError from Spotify's Next.js chunk) — instantiate browser context with locale='pt-BR' or 'en-US' to reproduce a real user experience. Real users on Chrome/Firefox/Safari do not see this. The DOM contract (data-testid, iframe src, fallback link href) is correct and stable.",
+  "rca_of_the_issue": "N/A — no unresolved issues. Both original bugs (silent YouTube autoplay iframe + placeholder Music images) are resolved: (a) YouTube iframe replaced with a visible floating Spotify embed (with fallback external link), (b) Music.jsx now consumes IMAGES.raquelHeadphones/justinLive and BIEBER_GALLERY of real Rock in Rio photos."
+}
