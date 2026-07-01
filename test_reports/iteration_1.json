@@ -1,0 +1,25 @@
+{
+  "summary": "Frontend-only smoke test of the Raquel tribute site on the public preview URL. All 4 sections (Hero, Journey, Music, Story), navigation, progress bar, footer, fonts, assets, and animations verified on desktop (1920x800) and mobile (390x844). Site fully functional — no blockers.",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "Page loads without JS console errors or page errors",
+    "All Nav testIDs visible: site-nav, nav-logo, nav-link-hero/journey/music/story",
+    "Hero: hero-section, hero-image (background-image with heroAdult URL), hero-title, hero-subtitle, hero-scroll-hint all visible on first fold",
+    "Second hero act: hero-mini-polaroid and hero-intro exist and become visible after scroll",
+    "Journey: journey-section, journey-title, and journey-step-0/1/2 exist; steps animate from opacity 0 -> 1 correctly when scrolled via wheel (Lenis + ScrollTrigger)",
+    "Music: music-section, music-title, music-marquee, and music-card-0..5 all present and animate in on scroll",
+    "Story: story-section, story-title, story-chapter-0/1/2, story-lucas-reveal, story-letter all present and animate in on scroll",
+    "Progress bar: .progress-bar element fixed top:0, height 2px, linear-gradient(90deg, #7c3aed, #fb923c, #fde047), scaleX transform grows with scroll",
+    "Footer visible with text 'R·raquel ... Um site — feito com muito amor por Lucas! ... 04 atos · 01 pessoa ... © 2026 — sempre pra você'",
+    "Fonts: hero-title & subtitle computed fontFamily = 'Fraunces, \"Playfair Display\", serif' — Fraunces loaded (no default sans fallback)",
+    "Assets: heroAdult (xkmp9w1x_image.png) and miniRaquel (r71kvi7s_image.png) both return HTTP 200",
+    "No horizontal overflow on desktop 1920x800 or mobile 390x844",
+    "Smooth scroll via Lenis works when clicking nav links AND when using mouse wheel; ScrollTrigger reveal animations fire correctly"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Initial checks with element.scrollIntoView() showed nested testIDs (journey-step-*, music-card-*, story-chapter-*) as visibility:hidden/opacity:0 — this is expected GSAP initial state. Using mouse.wheel() to trigger real scroll events resolves it and all reveal animations play correctly. Not a bug. One transient ERR_ABORTED for hero image was seen on initial load but image ultimately renders and HEAD request returns 200. Cloudflare /cdn-cgi/rum abort is unrelated Emergent template noise."
+}

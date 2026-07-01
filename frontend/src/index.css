@@ -1,0 +1,211 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Manrope:wght@300;400;500;600;700;800&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    /* Palette – roxo profundo com laranja/âmbar como acentos */
+    --night: #0a0510;
+    --plum-950: #120722;
+    --plum-900: #1a0b2e;
+    --plum-800: #241246;
+    --plum-700: #331a63;
+    --violet-600: #6d28d9;
+    --violet-500: #7c3aed;
+    --violet-400: #a78bfa;
+    --violet-300: #c4b5fd;
+    --tangerine: #fb923c;
+    --tangerine-bright: #ff7a1a;
+    --amber: #fbbf24;
+    --sun: #fde047;
+    --cream: #fef3c7;
+    --ivory: #fdf7ee;
+    --paper: #f5eee1;
+    --ink: #0a0510;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    background: var(--night);
+    color: var(--ivory);
+    font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings:
+        "ss01" on,
+        "cv11" on;
+    overflow-x: hidden;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+    overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+    pointer-events: none;
+}
+
+/* Custom text selection */
+::selection {
+    background: var(--tangerine);
+    color: var(--plum-950);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--plum-950);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--violet-600);
+    border-radius: 999px;
+}
+
+/* Editorial serif for display */
+.font-display {
+    font-family: "Fraunces", "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-variation-settings:
+        "SOFT" 30,
+        "WONK" 1;
+    letter-spacing: -0.02em;
+}
+.font-hand {
+    font-family: "Caveat", cursive;
+    letter-spacing: 0;
+}
+.font-mono {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Grain overlay for depth */
+.grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Custom cursor dot (subtle) */
+.cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--tangerine);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    transition:
+        width 0.2s,
+        height 0.2s;
+    will-change: transform;
+}
+
+/* Utility: split-text char animation base */
+.char-split {
+    display: inline-block;
+    overflow: hidden;
+    line-height: 1em;
+}
+.char-split > span {
+    display: inline-block;
+    will-change: transform;
+}
+
+/* Marquee */
+@keyframes marquee-x {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+.marquee-track {
+    display: inline-flex;
+    animation: marquee-x 40s linear infinite;
+}
+
+/* Glow */
+.glow-orange {
+    box-shadow:
+        0 0 60px -10px var(--tangerine),
+        0 0 120px -20px rgba(251, 146, 60, 0.4);
+}
+.glow-violet {
+    box-shadow:
+        0 0 80px -10px var(--violet-500),
+        0 0 160px -30px rgba(124, 58, 237, 0.35);
+}
+
+/* Radial vignette for hero */
+.vignette::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 40%,
+        rgba(10, 5, 16, 0.7) 100%
+    );
+}
+
+/* Hide until GSAP mounts */
+.gsap-hidden {
+    visibility: hidden;
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 3%;
+        --foreground: 40 60% 96%;
+        --card: 270 55% 8%;
+        --card-foreground: 40 60% 96%;
+        --popover: 270 55% 8%;
+        --popover-foreground: 40 60% 96%;
+        --primary: 262 83% 58%;
+        --primary-foreground: 40 60% 96%;
+        --secondary: 25 95% 60%;
+        --secondary-foreground: 0 0% 5%;
+        --muted: 270 30% 15%;
+        --muted-foreground: 40 20% 70%;
+        --accent: 45 96% 56%;
+        --accent-foreground: 0 0% 5%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 40 60% 96%;
+        --border: 270 30% 20%;
+        --input: 270 30% 20%;
+        --ring: 262 83% 58%;
+        --radius: 0.5rem;
+    }
+}

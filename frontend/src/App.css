@@ -1,0 +1,221 @@
+/* App-level custom styles */
+
+.app-root {
+    position: relative;
+    min-height: 100vh;
+    background: var(--night);
+    color: var(--ivory);
+}
+
+/* Section base */
+.section {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Hero */
+.hero-wrap {
+    position: relative;
+    height: 200vh;
+}
+.hero-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hero-image {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 20%;
+    background-repeat: no-repeat;
+    will-change: transform, clip-path;
+    transform-origin: center center;
+}
+
+.hero-title {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+/* Journey timeline */
+.timeline-rail {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--violet-500) 15%,
+        var(--tangerine) 85%,
+        transparent
+    );
+    transform: translateX(-50%);
+    opacity: 0.5;
+}
+
+/* Photo frame – polaroid */
+.polaroid {
+    background: var(--ivory);
+    padding: 14px 14px 60px;
+    box-shadow:
+        0 20px 60px -20px rgba(0, 0, 0, 0.7),
+        0 4px 12px -4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    color: var(--plum-900);
+    transform: rotate(-2deg);
+}
+.polaroid img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.polaroid .cap {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: "Caveat", cursive;
+    font-size: 26px;
+    color: var(--plum-900);
+}
+
+/* Ticker text */
+.ticker {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 300;
+    white-space: nowrap;
+}
+
+/* Chip */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-radius: 999px;
+    color: var(--amber);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: rgba(251, 191, 36, 0.04);
+}
+.chip .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--tangerine);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--tangerine);
+}
+
+/* Bieber card */
+.bieber-card {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    background: linear-gradient(
+        135deg,
+        rgba(109, 40, 217, 0.4),
+        rgba(251, 146, 60, 0.2)
+    );
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+}
+.bieber-card .placeholder-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--violet-300);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    opacity: 0.6;
+}
+
+/* Love letter card */
+.letter {
+    background: var(--paper);
+    color: var(--plum-950);
+    padding: 40px 44px;
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8);
+    position: relative;
+    font-family: "Fraunces", serif;
+    line-height: 1.55;
+}
+.letter::before,
+.letter::after {
+    content: "";
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    height: 1px;
+    background: rgba(10, 5, 16, 0.15);
+}
+.letter::before {
+    top: 20px;
+}
+.letter::after {
+    bottom: 20px;
+}
+
+/* Reveal helper */
+.reveal-line {
+    overflow: hidden;
+    display: block;
+}
+.reveal-line > span {
+    display: inline-block;
+    will-change: transform;
+}
+
+/* Nav */
+.nav-blur {
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    background: rgba(10, 5, 16, 0.5);
+    border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+}
+
+/* Progress bar */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        var(--violet-500),
+        var(--tangerine),
+        var(--sun)
+    );
+    transform-origin: left;
+    z-index: 100;
+    will-change: transform;
+}
+
+/* Big display number */
+.display-num {
+    font-family: "Fraunces", serif;
+    font-variation-settings: "SOFT" 100;
+    font-weight: 300;
+    line-height: 0.9;
+}
