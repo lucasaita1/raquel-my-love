@@ -19,7 +19,7 @@ const chapters = [
     {
         tag: "capítulo 04.3",
         title: "O dia em que virou 'Lucas!'",
-        body: "Não teve grande evento, não teve marco. Um dia o ponto de interrogação simplesmente foi embora. E ficou o Lucas — sem dúvida, com exclamação, com certeza.",
+        body: "Não teve grande evento, não teve marco. Meu contato ainda continua com \"?\" — mas sei que no seu coração eu sou um grande \"!\". Te amo, minha noiva.",
     },
 ];
 
@@ -212,19 +212,25 @@ export const OurStory = () => {
                     <div className="md:col-span-7 md:col-start-6">
                         <div className="letter">
                             <p className="text-lg md:text-xl">
-                                <em>Raquel,</em>
+                                <em>Meu amor,</em>
                             </p>
                             <p className="mt-6 text-base md:text-lg">
-                                Se um dia você duvidar do quanto é foda, volta aqui
-                                e lê. Do laço na cabeça ao quarto ano — passando pela
-                                pedagogia, pelos livros de história, pelos gritos
-                                dos shows do Justin — tudo em você é intenção. Nada
-                                é acaso.
+                                Eu criei esse espaço para você nunca esquecer quem
+                                você é. Da menininha cheia de sonhos à professora e
+                                pedagoga incrível que me dá orgulho todos os dias.
+                                Ver você ensinando história para os seus alunos, ou
+                                vibrando ouvindo Justin Bieber, me faz lembrar o
+                                quanto você é única. Você faz tudo com tanta verdade
+                                e paixão que é impossível não se apaixonar.
                             </p>
                             <p className="mt-4 text-base md:text-lg">
-                                Obrigado por ter tirado o &ldquo;?&rdquo; e deixado só o &ldquo;!&rdquo;.
-                                Obrigado por me deixar ficar. E prometo continuar
-                                sendo o Lucas com exclamação, sempre.
+                                Obrigado por mudar a minha vida, por transformar meus
+                                medos em certezas e por me deixar fazer parte da sua
+                                história. Estar ao seu lado me faz o homem mais feliz
+                                do mundo.
+                            </p>
+                            <p className="mt-4 text-base md:text-lg">
+                                Prometo te amar e ser a sua interrogação mais certa.
                             </p>
                             <p className="mt-8 font-hand text-3xl md:text-4xl text-[color:var(--plum-900)]">
                                 — Lucas!

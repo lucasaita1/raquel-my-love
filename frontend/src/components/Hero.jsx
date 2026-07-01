@@ -203,7 +203,7 @@ export const Hero = () => {
                                     style={{ objectPosition: "center 25%" }}
                                 />
                             </div>
-                            <div className="cap">mini raquel · sempre foda</div>
+                            <div className="cap">mini raquel</div>
                         </div>
                     </div>
 
