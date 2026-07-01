@@ -25,7 +25,7 @@ export const BIEBER_GALLERY = [
     {
         id: 2,
         src: "https://customer-assets.emergentagent.com/job_raquel-tribute/artifacts/n4tzx8yp_image.png",
-        caption: "Ele no palco · Justice Tour",
+        caption: "Ele no palco",
     },
     {
         id: 3,
