@@ -34,6 +34,34 @@ export const BIEBER_GALLERY = [
     },
 ];
 
+// Couple photos for the secret /pra-voce route (cinematic scroll blocks)
+export const COUPLE_PHOTOS = [
+    {
+        id: 1,
+        src: "https://customer-assets.emergentagent.com/job_raquel-tribute/artifacts/96q4n91g_image.png",
+        caption: "arena · na chuva, e sorrindo mesmo assim",
+        tag: "nós · time",
+    },
+    {
+        id: 2,
+        src: "https://customer-assets.emergentagent.com/job_raquel-tribute/artifacts/0k2vu1nu_image.png",
+        caption: "jardim botânico · quase encostando testa com testa",
+        tag: "nós · Curitiba",
+    },
+    {
+        id: 3,
+        src: "https://customer-assets.emergentagent.com/job_raquel-tribute/artifacts/ybiikgoz_image.png",
+        caption: "no mar · o anel na mão dela",
+        tag: "nós · pra sempre",
+    },
+    {
+        id: 4,
+        src: "https://customer-assets.emergentagent.com/job_raquel-tribute/artifacts/b07m5bhw_image.png",
+        caption: "parque · dois sorrisos, mesmo enquadramento",
+        tag: "nós · dias assim",
+    },
+];
+
 // Placeholder our-story photo slots (fill later)
 export const STORY_GALLERY = [
     { id: 1, src: null, caption: "O primeiro oi" },

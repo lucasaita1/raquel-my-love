@@ -3,9 +3,11 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import useLenis from "@/hooks/useLenis";
 import useCursor from "@/hooks/useCursor";
+import { COUPLE_PHOTOS } from "@/constants/assets";
 
-// Know No Better — Major Lazer feat. Travis Scott, Camila Cabello & Quavo
-const SPOTIFY_TRACK_ID = "7LJkGyL4vVrtn1mho7BmtA";
+// Correct track — from user's Spotify link
+// https://open.spotify.com/intl-pt/track/6iKFUkq6GmaW4UQGED1tSd
+const SPOTIFY_TRACK_ID = "6iKFUkq6GmaW4UQGED1tSd";
 
 const BLOCKS = [
     { kind: "kicker", text: "carta ao vivo · toque play no player abaixo" },
@@ -22,10 +24,12 @@ const BLOCKS = [
         emph: "ou vibrando ouvindo Justin Bieber,",
         after: "me faz lembrar o quanto você é única.",
     },
+    { kind: "photo", photoIndex: 0 },
     {
         kind: "quote",
         text: "Você faz tudo com tanta verdade e paixão que é impossível não se apaixonar.",
     },
+    { kind: "photo", photoIndex: 1 },
     { kind: "para", text: "Obrigado por mudar a minha vida," },
     {
         kind: "para",
@@ -37,11 +41,13 @@ const BLOCKS = [
         text: "Estar ao seu lado me faz",
         highlight: "o homem mais feliz do mundo.",
     },
+    { kind: "photo", photoIndex: 2 },
     {
         kind: "promise",
         text: "Prometo te amar",
         after: "e ser a sua interrogação mais certa.",
     },
+    { kind: "photo", photoIndex: 3 },
     { kind: "sign", text: "— Lucas!" },
 ];
 
@@ -66,17 +72,72 @@ export default function PraVoce() {
         const ctx = gsap.context(() => {
             blocksRef.current.forEach((el) => {
                 if (!el) return;
-                gsap.from(el, {
-                    scrollTrigger: {
-                        trigger: el,
-                        start: "top 80%",
-                        end: "top 30%",
-                        scrub: 1,
-                    },
-                    y: 60,
-                    autoAlpha: 0,
-                    ease: "none",
-                });
+                const isPhoto = el.querySelector(".pra-voce-photo");
+
+                if (isPhoto) {
+                    // ── Lando-Norris-style cinematic photo entry ──
+                    const img = el.querySelector(".pra-voce-photo-img");
+                    const meta = el.querySelector(".pra-voce-photo-meta");
+                    const wrap = el.querySelector(".pra-voce-photo");
+
+                    // Clip reveal + scale ease-in as it enters viewport
+                    gsap.fromTo(
+                        wrap,
+                        { clipPath: "inset(12% 8% 12% 8%)" },
+                        {
+                            clipPath: "inset(0% 0% 0% 0%)",
+                            ease: "expo.out",
+                            duration: 1.4,
+                            scrollTrigger: {
+                                trigger: wrap,
+                                start: "top 85%",
+                                end: "top 25%",
+                                scrub: 1.2,
+                            },
+                        },
+                    );
+                    // Aggressive parallax + scale on image
+                    gsap.fromTo(
+                        img,
+                        { scale: 1.25, yPercent: -6 },
+                        {
+                            scale: 1.02,
+                            yPercent: 6,
+                            ease: "none",
+                            scrollTrigger: {
+                                trigger: wrap,
+                                start: "top bottom",
+                                end: "bottom top",
+                                scrub: 1.2,
+                            },
+                        },
+                    );
+                    // Meta text fade + slide
+                    if (meta) {
+                        gsap.from(meta, {
+                            y: 60,
+                            autoAlpha: 0,
+                            duration: 1,
+                            ease: "expo.out",
+                            scrollTrigger: {
+                                trigger: wrap,
+                                start: "top 55%",
+                            },
+                        });
+                    }
+                } else {
+                    gsap.from(el, {
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 80%",
+                            end: "top 30%",
+                            scrub: 1,
+                        },
+                        y: 60,
+                        autoAlpha: 0,
+                        ease: "none",
+                    });
+                }
             });
             // Player floats in
             gsap.from(playerWrapRef.current, {
@@ -144,7 +205,7 @@ export default function PraVoce() {
                     </button>
 
                     <p className="mt-6 text-[10px] font-mono tracking-[0.24em] uppercase text-[color:var(--ivory)]/40">
-                        ♫ Know No Better · Major Lazer feat. Camila Cabello
+                        ♫ nossa música
                     </p>
                 </div>
             )}
@@ -219,90 +280,131 @@ export default function PraVoce() {
                 </section>
 
                 {/* Blocks */}
-                <div className="max-w-[1100px] mx-auto px-6 md:px-12 pb-40">
-                    {BLOCKS.map((b, i) => (
-                        <div
-                            key={i}
-                            ref={(el) => (blocksRef.current[i] = el)}
-                            data-testid={`pra-voce-block-${i}`}
-                            className={`my-24 md:my-40 ${
-                                b.kind === "big" || b.kind === "title"
-                                    ? "text-center"
-                                    : i % 2 === 0
-                                      ? "text-left"
-                                      : "text-right md:pl-32"
-                            }`}
-                        >
-                            {b.kind === "kicker" && (
-                                <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-[color:var(--amber)]">
-                                    {b.text}
-                                </div>
-                            )}
+                <div className="pb-40">
+                    {BLOCKS.map((b, i) => {
+                        const isPhoto = b.kind === "photo";
+                        const containerCls = isPhoto
+                            ? "relative w-full my-32 md:my-56"
+                            : `max-w-[1100px] mx-auto px-6 md:px-12 my-24 md:my-40 ${
+                                  b.kind === "big" || b.kind === "title"
+                                      ? "text-center"
+                                      : i % 2 === 0
+                                        ? "text-left"
+                                        : "text-right md:pl-32"
+                              }`;
 
-                            {b.kind === "title" && (
-                                <h2 className="font-display italic font-light text-6xl md:text-9xl lg:text-[11rem] leading-[0.9]">
-                                    {b.text}{" "}
-                                    <em className="not-italic text-[color:var(--tangerine)]">
-                                        {b.highlight}
-                                    </em>
-                                </h2>
-                            )}
-
-                            {b.kind === "para" && (
-                                <p className="font-display italic font-light text-3xl md:text-5xl lg:text-6xl leading-[1.05] max-w-[900px]">
-                                    {b.text}
-                                    {b.emph && (
-                                        <>
-                                            {" "}
-                                            <em className="not-italic text-[color:var(--amber)]">
-                                                {b.emph}
-                                            </em>
-                                        </>
-                                    )}
-                                    {b.after && <> {b.after}</>}
-                                </p>
-                            )}
-
-                            {b.kind === "quote" && (
-                                <blockquote className="border-l-2 border-[color:var(--tangerine)] pl-8 md:pl-12">
-                                    <p className="font-display italic text-3xl md:text-5xl lg:text-6xl leading-[1.05] text-[color:var(--ivory)]">
-                                        &ldquo;{b.text}&rdquo;
-                                    </p>
-                                </blockquote>
-                            )}
-
-                            {b.kind === "big" && (
-                                <h3 className="font-display italic font-light text-5xl md:text-8xl lg:text-9xl leading-[0.92]">
-                                    {b.text}
-                                    <br />
-                                    <em className="not-italic text-[color:var(--tangerine)]">
-                                        {b.highlight}
-                                    </em>
-                                </h3>
-                            )}
-
-                            {b.kind === "promise" && (
-                                <p className="font-display italic text-4xl md:text-6xl leading-[1.05] max-w-[900px]">
-                                    {b.text}
-                                    <br />
-                                    <span className="text-[color:var(--amber)] not-italic">
-                                        {b.after}
-                                    </span>
-                                </p>
-                            )}
-
-                            {b.kind === "sign" && (
-                                <div className="pt-16 flex flex-col items-center justify-center text-center">
-                                    <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-[color:var(--ivory)]/50 mb-6">
-                                        assinado com toda a certeza que tenho
-                                    </div>
-                                    <div className="font-hand text-7xl md:text-9xl text-[color:var(--tangerine)]">
+                        return (
+                            <div
+                                key={i}
+                                ref={(el) => (blocksRef.current[i] = el)}
+                                data-testid={`pra-voce-block-${i}`}
+                                className={containerCls}
+                            >
+                                {b.kind === "kicker" && (
+                                    <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-[color:var(--amber)]">
                                         {b.text}
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                                )}
+
+                                {b.kind === "title" && (
+                                    <h2 className="font-display italic font-light text-6xl md:text-9xl lg:text-[11rem] leading-[0.9]">
+                                        {b.text}{" "}
+                                        <em className="not-italic text-[color:var(--tangerine)]">
+                                            {b.highlight}
+                                        </em>
+                                    </h2>
+                                )}
+
+                                {b.kind === "para" && (
+                                    <p className="font-display italic font-light text-3xl md:text-5xl lg:text-6xl leading-[1.05] max-w-[900px]">
+                                        {b.text}
+                                        {b.emph && (
+                                            <>
+                                                {" "}
+                                                <em className="not-italic text-[color:var(--amber)]">
+                                                    {b.emph}
+                                                </em>
+                                            </>
+                                        )}
+                                        {b.after && <> {b.after}</>}
+                                    </p>
+                                )}
+
+                                {b.kind === "quote" && (
+                                    <blockquote className="border-l-2 border-[color:var(--tangerine)] pl-8 md:pl-12">
+                                        <p className="font-display italic text-3xl md:text-5xl lg:text-6xl leading-[1.05] text-[color:var(--ivory)]">
+                                            &ldquo;{b.text}&rdquo;
+                                        </p>
+                                    </blockquote>
+                                )}
+
+                                {b.kind === "big" && (
+                                    <h3 className="font-display italic font-light text-5xl md:text-8xl lg:text-9xl leading-[0.92]">
+                                        {b.text}
+                                        <br />
+                                        <em className="not-italic text-[color:var(--tangerine)]">
+                                            {b.highlight}
+                                        </em>
+                                    </h3>
+                                )}
+
+                                {b.kind === "promise" && (
+                                    <p className="font-display italic text-4xl md:text-6xl leading-[1.05] max-w-[900px]">
+                                        {b.text}
+                                        <br />
+                                        <span className="text-[color:var(--amber)] not-italic">
+                                            {b.after}
+                                        </span>
+                                    </p>
+                                )}
+
+                                {b.kind === "sign" && (
+                                    <div className="pt-16 flex flex-col items-center justify-center text-center">
+                                        <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-[color:var(--ivory)]/50 mb-6">
+                                            assinado com toda a certeza que tenho
+                                        </div>
+                                        <div className="font-hand text-7xl md:text-9xl text-[color:var(--tangerine)]">
+                                            {b.text}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {b.kind === "photo" && (
+                                    <div
+                                        data-testid={`pra-voce-photo-${b.photoIndex}`}
+                                        className="pra-voce-photo relative w-full h-[85vh] md:h-[92vh] overflow-hidden"
+                                    >
+                                        <img
+                                            src={COUPLE_PHOTOS[b.photoIndex].src}
+                                            alt={COUPLE_PHOTOS[b.photoIndex].caption}
+                                            className="pra-voce-photo-img absolute inset-0 w-full h-full object-cover"
+                                            style={{
+                                                willChange: "transform",
+                                                objectPosition: "center 20%",
+                                            }}
+                                        />
+                                        <div
+                                            className="absolute inset-0 pointer-events-none"
+                                            style={{
+                                                background:
+                                                    "linear-gradient(180deg, rgba(10,5,16,0.35) 0%, transparent 30%, transparent 60%, rgba(10,5,16,0.85) 100%)",
+                                            }}
+                                        />
+                                        <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16 lg:p-24">
+                                            <div className="pra-voce-photo-meta">
+                                                <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-[color:var(--tangerine)] mb-3">
+                                                    {COUPLE_PHOTOS[b.photoIndex].tag}
+                                                </div>
+                                                <div className="font-display italic text-3xl md:text-5xl lg:text-6xl text-[color:var(--ivory)] max-w-[900px] leading-[1.05]">
+                                                    {COUPLE_PHOTOS[b.photoIndex].caption}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* Outro */}
