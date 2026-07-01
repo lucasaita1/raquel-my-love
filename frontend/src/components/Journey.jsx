@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { JOURNEY } from "@/constants/testIds";
+import { JOURNEY_PHOTOS } from "@/constants/assets";
 
 const steps = [
     {
@@ -10,6 +11,7 @@ const steps = [
         title: "Pedagogia",
         body: "Onde a paciência vira método, e o método vira ternura. Ensinar não é sobre transmitir — é sobre acender.",
         accent: "var(--tangerine)",
+        photo: 0,
     },
     {
         chapter: "cap. 02.2",
@@ -17,6 +19,7 @@ const steps = [
         title: "4º ano · Fundamental",
         body: "Vinte e poucas cabeças curiosas, um giz, e a certeza de que cada um deles vai lembrar dela pro resto da vida.",
         accent: "var(--amber)",
+        photo: 1,
     },
     {
         chapter: "cap. 02.3",
@@ -24,6 +27,7 @@ const steps = [
         title: "História",
         body: "Contar o passado para explicar o presente. Ela lê como quem escava, e ensina como quem entrega mapas.",
         accent: "var(--violet-400)",
+        photo: 2,
     },
 ];
 
@@ -125,13 +129,13 @@ export const Journey = () => {
                         <span className="w inline-block">
                             pedagoga,{" "}
                             <em className="not-italic text-[color:var(--tangerine)]">
-                                historiadora
+                                apaixonada
                             </em>
                         </span>
                     </span>{" "}
                     <span className="reveal-line">
                         <span className="w inline-block">
-                            do afeto.
+                            pelo que faz.
                         </span>
                     </span>
                 </h2>
@@ -192,15 +196,34 @@ export const Journey = () => {
                                     } hidden md:block`}
                                 >
                                     <div
-                                        className="h-64 border border-white/5 relative overflow-hidden"
+                                        className="relative overflow-hidden aspect-[4/5]"
                                         style={{
-                                            background: `linear-gradient(135deg, ${s.accent}22, transparent 60%)`,
+                                            boxShadow: `0 24px 60px -20px ${s.accent}55`,
                                         }}
                                     >
-                                        <div className="absolute bottom-4 left-4 font-hand text-3xl text-[color:var(--ivory)]/60">
+                                        <img
+                                            src={JOURNEY_PHOTOS[s.photo].src}
+                                            alt={s.title}
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] hover:scale-105"
+                                            style={{
+                                                objectPosition:
+                                                    JOURNEY_PHOTOS[s.photo].objectPosition,
+                                            }}
+                                            data-testid={`journey-photo-${i}`}
+                                        />
+                                        <div
+                                            className="absolute inset-0 pointer-events-none"
+                                            style={{
+                                                background: `linear-gradient(180deg, transparent 55%, rgba(10,5,16,0.85) 100%)`,
+                                            }}
+                                        />
+                                        <div className="absolute bottom-4 left-5 font-hand text-3xl text-[color:var(--ivory)]/95">
                                             {s.title.toLowerCase()}
                                         </div>
-                                        <div className="absolute top-4 right-4 font-mono text-[10px] tracking-[0.3em] uppercase text-[color:var(--ivory)]/40">
+                                        <div
+                                            className="absolute top-4 right-4 font-mono text-[10px] tracking-[0.3em] uppercase"
+                                            style={{ color: s.accent }}
+                                        >
                                             0{i + 1} / 03
                                         </div>
                                     </div>

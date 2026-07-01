@@ -239,35 +239,36 @@ export const OurStory = () => {
                     </div>
                 </div>
 
-                {/* Placeholder gallery */}
+                {/* Nossos momentos — só as fotos */}
                 <div className="mt-32">
                     <div className="flex items-end justify-between mb-8">
                         <h3 className="font-display italic text-2xl md:text-4xl text-[color:var(--ivory)]">
-                            Nossos momentos — em breve
+                            Nossos momentos
                         </h3>
                         <span className="font-mono text-[11px] tracking-[0.28em] uppercase text-[color:var(--ivory)]/50">
-                            placeholder
+                            04 fotos · pra lembrar
                         </span>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {STORY_GALLERY.map((item, i) => (
-                            <div key={item.id} className="bieber-card">
-                                {item.src ? (
-                                    <img
-                                        src={item.src}
-                                        alt={item.caption}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="placeholder-label">
-                                        SLOT {String(i + 1).padStart(2, "0")}
-                                    </div>
-                                )}
-                                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-[color:var(--plum-950)] to-transparent">
-                                    <div className="font-hand text-lg text-[color:var(--amber)]">
-                                        {item.caption}
-                                    </div>
-                                </div>
+                        {STORY_GALLERY.map((item) => (
+                            <div
+                                key={item.id}
+                                data-testid={`story-photo-${item.id}`}
+                                className="relative aspect-[3/4] overflow-hidden group"
+                            >
+                                <img
+                                    src={item.src}
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-105"
+                                    style={{ objectPosition: "center 30%" }}
+                                />
+                                <div
+                                    className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                                    style={{
+                                        background:
+                                            "linear-gradient(180deg, transparent 60%, rgba(10,5,16,0.6) 100%)",
+                                    }}
+                                />
                             </div>
                         ))}
                     </div>
