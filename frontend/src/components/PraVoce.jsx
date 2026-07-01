@@ -239,7 +239,7 @@ export default function PraVoce() {
                             </a>
                         </div>
                         <iframe
-                            title="Know No Better on Spotify"
+                            title="Nossa música on Spotify"
                             data-testid="pra-voce-spotify-iframe"
                             src={`https://open.spotify.com/embed/track/${SPOTIFY_TRACK_ID}?utm_source=generator`}
                             width="100%"
